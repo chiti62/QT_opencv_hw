@@ -24,17 +24,33 @@ void MainWindow::on_actionLoad_triggered()
     cv::resize(src,src,cv::Size(width/4,height/4));
     this->img = src.clone();
     this->showImage(this->img);
-    //cv::Mat sml;
+    this->cur=this->img.clone();
+    this->rslt=this->img.clone();
 
     ui->label->setPixmap(QPixmap::fromImage(this->Mat2QImage(sml)));
 }
 
 void MainWindow::on_horizontalSlider_valueChanged(int value)
 {
-    //cv::Mat dst;
-    cv::Mat src = this->img;
-    cv::Mat dst(src);
-    //dst = this->img.clone();//this 指定mainwindow的變數
+    if(sldr[1]==1){
+        ui->red_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[2]==1){
+        ui->green_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[3]==1){
+        ui->blue_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[4]==1){
+        ui->contrast_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    sldr[0]=1;
+    cv::Mat dst;
+    dst = this->cur.clone();//this 指定mainwindow的變數
     for(int i = 0 ;i <this->img.rows ; i++){
         for(int j = 0 ;j <this->img.cols ; j++){
             for(int k = 0 ;k <this->img.channels() ; k++){//channels:rgb
@@ -51,6 +67,7 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
         }
     }
     this->showImage(dst);
+    this->rslt=dst;
 }
 
 void MainWindow::changeColor(const cv::Mat &src, cv::Mat &dst, QVector<int> value)
@@ -123,44 +140,92 @@ void MainWindow::showImage(const cv::Mat &src)
 }
 void MainWindow::on_red_horizontalSlider_valueChanged(int value)
 {
-    //cv::Mat dst;
-    cv::Mat src = this->img;
-    cv::Mat dst(src);
+    if(sldr[0]==1){
+        ui->horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[2]==1){
+        ui->green_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[3]==1){
+        ui->blue_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[4]==1){
+        ui->contrast_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    sldr[1]=1;
+    cv::Mat dst;
+    dst = this->cur.clone();
     QVector<int> valueVec(3);
     valueVec[0] = ui->blue_horizontalSlider->value();
     valueVec[1] = ui->green_horizontalSlider->value();
     valueVec[2] = ui->red_horizontalSlider->value();
-    //dst = this->img.clone();
-    this->changeColor(this->img,dst,valueVec);
+    this->changeColor(this->cur,dst,valueVec);
     this->showImage(dst);
+    this->rslt=dst;
 }
 
 void MainWindow::on_green_horizontalSlider_valueChanged(int value)
 {
-    //cv::Mat dst;
-    cv::Mat src = this->img;
-    cv::Mat dst(src);
+    if(sldr[0]==1){
+        ui->horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[1]==1){
+        ui->red_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[3]==1){
+        ui->blue_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[4]==1){
+        ui->contrast_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    sldr[2]=1;
+    cv::Mat dst;
+    dst = this->cur.clone();
     QVector<int> valueVec(3);
     valueVec[0] = ui->blue_horizontalSlider->value();
     valueVec[1] = ui->green_horizontalSlider->value();
     valueVec[2] = ui->red_horizontalSlider->value();
-    //dst = this->img.clone();
-    this->changeColor(this->img,dst,valueVec);
+    this->changeColor(this->cur,dst,valueVec);
     this->showImage(dst);
+    this->rslt=dst;
 }
 
 void MainWindow::on_blue_horizontalSlider_valueChanged(int value)
 {
-    //cv::Mat dst;
-    cv::Mat src = this->img;
-    cv::Mat dst(src);
+    if(sldr[0]==1){
+        ui->horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[1]==1){
+        ui->red_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[2]==1){
+        ui->green_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[4]==1){
+        ui->contrast_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    sldr[3]=1;
+    cv::Mat dst;
+    dst = this->cur.clone();
     QVector<int> valueVec(3);
     valueVec[0] = ui->blue_horizontalSlider->value();
     valueVec[1] = ui->green_horizontalSlider->value();
     valueVec[2] = ui->red_horizontalSlider->value();
-    //dst = this->img.clone();
     this->changeColor(this->img,dst,valueVec);
     this->showImage(dst);
+    this->rslt=dst;
 }
 
 void MainWindow::on_grayscale_pushButton_clicked()
@@ -170,9 +235,9 @@ void MainWindow::on_grayscale_pushButton_clicked()
     ui->green_horizontalSlider->setEnabled(false);
     ui->blue_horizontalSlider->setEnabled(false);
     ui->blur_pushButton->setEnabled(false);
-    cv::Mat src = this->img;
-    //cv::Mat dst;
-    cv::Mat dst(src);
+    ui->contrast_horizontalSlider->setEnabled(false);
+    cv::Mat src = this->rslt;
+    cv::Mat dst;
     dst.create(cv::Size(src.cols,src.rows),CV_8UC1);
     for(int i = 0 ;i <this->img.rows ; i++){
         for(int j = 0 ;j <this->img.cols ; j++){
@@ -180,15 +245,24 @@ void MainWindow::on_grayscale_pushButton_clicked()
         }
     }
     this->showImage(dst);
-    this->img=dst;
+    this->rslt=dst;
 }
 
 void MainWindow::on_blur_pushButton_clicked()
 {
-    cv::Mat src = this->img;
-    cv::Mat dst(src);//?????????????????
+    if(sldr[0]==1)
+        ui->horizontalSlider->setEnabled(false);
+    if(sldr[1]==1)
+        ui->red_horizontalSlider->setEnabled(false);
+    if(sldr[2]==1)
+        ui->green_horizontalSlider->setEnabled(false);
+    if(sldr[3]==1)
+        ui->blue_horizontalSlider->setEnabled(false);
+    if(sldr[4]==1)
+        ui->contrast_horizontalSlider->setEnabled(false);
 
-
+    cv::Mat src = this->rslt.clone();
+    cv::Mat dst = this->rslt.clone();
 
     for(int i = 1 ;i <src.rows-1 ; i++){
         for(int j = 1 ;j <src.cols-1 ; j++){
@@ -207,34 +281,87 @@ void MainWindow::on_blur_pushButton_clicked()
         }
     }
     this->showImage(dst);
-    this->rst=dst.clone();
+    this->rslt=dst.clone();
+    this->cur=dst.clone();
 }
 
 void MainWindow::on_actionSave_triggered()
 {
-    cv::imwrite("Result.bmp",this->img);
+    cv::imwrite("Result.bmp",this->rslt);
 }
 
 void MainWindow::on_negative_clicked()
 {
-    cv::Mat src = this->img;
-    cv::Mat dst(src);
+    if(sldr[0]==1)
+        ui->horizontalSlider->setEnabled(false);
+    if(sldr[1]==1)
+        ui->red_horizontalSlider->setEnabled(false);
+    if(sldr[2]==1)
+        ui->green_horizontalSlider->setEnabled(false);
+    if(sldr[3]==1)
+        ui->blue_horizontalSlider->setEnabled(false);
+    if(sldr[4]==1)
+        ui->contrast_horizontalSlider->setEnabled(false);
+    cv::Mat dst=this->rslt.clone();
 
     for(int i = 0 ;i <this->img.rows ; i++){
         for(int j = 0 ;j <this->img.cols ; j++){
             for(int k = 0 ;k <this->img.channels() ; k++){//channels:rgb
-                (this->img.at<cv::Vec3b>(i,j)[k])=255-(this->img.at<cv::Vec3b>(i,j)[k]);
-//                if(this->img.at<cv::Vec3b>(i,j)[k]+value > 255){
-//                    dst.at<cv::Vec3b>(i,j)[k]=255;
-//                }
-//                else if(this->img.at<cv::Vec3b>(i,j)[k]+value < 0){
-//                    dst.at<cv::Vec3b>(i,j)[k]=0;
-//                }
-//                else{
-//                    dst.at<cv::Vec3b>(i,j)[k]=dst.at<cv::Vec3b>(i,j)[k] + value;
-//                }
+                (dst.at<cv::Vec3b>(i,j)[k])=255-(dst.at<cv::Vec3b>(i,j)[k]);
             }
         }
     }
     this->showImage(dst);
+    this->rslt=dst;
+    this->cur=dst.clone();
+}
+
+
+void MainWindow::on_contrast_horizontalSlider_valueChanged(int value)
+{
+    if(sldr[0]==1){
+        ui->horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[1]==1){
+        ui->red_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[2]==1){
+        ui->green_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    if(sldr[3]==1){
+        ui->blue_horizontalSlider->setEnabled(false);
+        this->cur=this->rslt;
+    }
+    sldr[4]=1;
+    float newV = value/10.0;
+
+        cv::Mat dst=this->cur.clone();
+        for(int i = 0 ;i < this->img.rows ; i++)
+        {
+            for(int j = 0 ;j < this->img.cols ; j++)
+            {
+                for(int k = 0 ;k < this->img.channels() ; k++)
+                {
+                    if(this->img.at<cv::Vec3b>(i,j)[k]*newV > 255)
+                    {
+                        dst.at<cv::Vec3b>(i,j)[k] = 255;
+                    }
+                    else if(this->img.at<cv::Vec3b>(i,j)[k]*newV < 0)
+                    {
+                        dst.at<cv::Vec3b>(i,j)[k] = 0;
+                    }
+                    else
+                    {
+                        dst.at<cv::Vec3b>(i,j)[k] = this->img.at<cv::Vec3b>(i,j)[k]*newV;
+                    }
+
+                }
+            }
+        }
+
+        this->showImage(dst);
+        this->rslt=dst;
 }

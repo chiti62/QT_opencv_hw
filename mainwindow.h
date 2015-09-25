@@ -43,14 +43,21 @@ private slots:
 
     void on_negative_clicked();
 
+
+    void on_contrast_horizontalSlider_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
 
-    cv::Mat img;
-
     cv::Mat sml;
 
-    cv::Mat rst;
+    cv::Mat cur;//可能經過負片或模糊處理
+
+    cv::Mat img;//原圖
+
+    cv::Mat rslt;//輸出的圖(目前顯示在螢幕上的)
+
+    int sldr[5];
 
     void changeColor(const cv::Mat &src , cv::Mat &dst, QVector<int> value);
 
